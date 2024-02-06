@@ -1,0 +1,21 @@
+{% extends 'base.html' %}
+
+{% block content %}
+<form class="form-cart" method="post">
+    {% csrf_token %}
+    <div>
+        <button id="counter_product_up">+</button>
+        <p id="counter">{{ counter }}</p>
+        <button id="counter_product_down">-</button>
+    </div>
+</form>
+{% endblock %}
+{% block script %}
+<script>
+      $(document).ready(function () {
+          $('#counter_product_up').on('click', function (event) {
+              event.preventDefault();
+          })
+      })
+</script>
+{% endblock %}
