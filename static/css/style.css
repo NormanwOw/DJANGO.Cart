@@ -1,0 +1,23 @@
+.card {
+    margin-top: 2em;
+}
+
+.product-count {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    position: absolute;
+    width: 15px;
+    height: 15px;
+    left: 149px;
+    top: 11px;
+    color: white;
+    font-weight: 900;
+    font-size: 0.7em;
+    background-color: #e74242;
+    border-radius: 10px;
+}
+
+.product-count p {
+    margin: 0;
+}

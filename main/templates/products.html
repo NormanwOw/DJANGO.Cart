@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+    <div class="row">
+    {% for product in products %}
+      <div class="col">
+          <div class="card" style="width: 18rem;height: 18rem;">
+              <div class="card-body">
+                <h5 class="card-title">{{ product.name }}</h5>
+                <p class="card-text"></p>
+              </div>
+              <ul class="list-group list-group-flush">
+                <li class="list-group-item">...</li>
+                <li class="list-group-item">...</li>
+                <li class="list-group-item">{{ product.price }} руб.</li>
+              </ul>
+              <div class="card-body">
+                <button class="cart_add" value="{{ product.pk }}">
+                    {% csrf_token %}
+                    Добавить в корзину
+                </button>
+              </div>
+          </div>
+      </div>
+    {% endfor %}
+    </div>
+</div>
+{% endblock %}
+{% block script %}
+<script>
+$(document).ready(function () {
+  $('.cart_add').click(function (event) {
+      event.preventDefault();
+      let productID = $(this).attr('value');
+      $.ajax({
+          method: 'POST',
+          url: {% url 'carts:cart-add' %},
+          data: {
+              'product_id': productID,
+              'csrfmiddlewaretoken': $("[name=csrfmiddlewaretoken]").val()
+          },
+          success: function (data) {
+              $('.product-count').css('display', 'flex');
+              $('.product-count>p').text(data.product_count);
+          }
+      });
+      return false;
+  });
+});
+</script>
+{% endblock %}
