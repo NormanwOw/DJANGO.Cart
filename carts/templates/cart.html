@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+
+{% block content %}
+{{ form }}
+{% endblock %}
+{% block script %}
+<script>
+      {#$(document).ready(function () {#}
+      {#    $('#counter_product_up').on('click', function (event) {#}
+      {#        event.preventDefault();#}
+      {#        let counter = $('#counter')#}
+      {#        let counterNumber = Number(counter.text());#}
+      {#        counterNumber+=1;#}
+      {#        counter.text(String(counterNumber));#}
+      {#    });#}
+      {#    $('#counter_product_down').on('click', function (event) {#}
+      {#        event.preventDefault();#}
+      {#        let counter = $('#counter')#}
+      {#        let counterNumber = Number(counter.text());#}
+      {#        if (counterNumber > 1) {#}
+      {#            counterNumber-=1;#}
+      {#            counter.text(String(counterNumber));#}
+      {#        }#}
+      {#    });#}
+      {# });#}
+      {#$(document).ready(function () {#}
+      {#    $('#accept_order').on('click', function (event) {#}
+      {#        event.preventDefault();#}
+      {#        let counter = Number($('#counter').text());#}
+      {#        $.ajax({#}
+      {#            type: 'POST',#}
+      {#            data: {'count': counter},#}
+      {#            url: '{% url "carts:new-order" %}',#}
+      {#            success: function (response) {},#}
+      {#            error: function (response) {#}
+      {#                console.log(response.responseJSON.errors)#}
+      {#            }#}
+      {#        });#}
+      {#    });#}
+      {# })#}
+</script>
+{% endblock %}

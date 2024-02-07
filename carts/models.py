@@ -53,6 +53,17 @@ class Order(models.Model):
         verbose_name_plural = 'заказы'
 
 
+class OrderItemQueryset(models.QuerySet):
+
+    def total_price(self):
+        return sum(cart.products_price() for cart in self)
+
+    def total_quantity(self):
+        if self:
+            return sum(cart.quantity for cart in self)
+        return 0
+
+
 class OrderItem(models.Model):
     order = models.ForeignKey(
         to=Order,
@@ -74,7 +85,55 @@ class OrderItem(models.Model):
         verbose_name='Дата продажи'
     )
 
+    objects = OrderItemQueryset.as_manager()
+
     class Meta:
         db_table = 'order_item'
         verbose_name = 'проданный товар'
         verbose_name_plural = 'проданные товары'
+
+    def products_price(self):
+        return round(self.product.price * self.quantity, 2)
+
+
+class CartQueryset(models.QuerySet):
+
+    def total_price(self):
+        return sum(cart.products_price() for cart in self)
+
+    def total_quantity(self):
+        if self:
+            return sum(cart.quantity for cart in self)
+        return 0
+
+
+class Cart(models.Model):
+
+    user = models.ForeignKey(
+        to=User, on_delete=models.CASCADE,
+        blank=True, null=True,
+        verbose_name='Пользователь'
+    )
+    product = models.ForeignKey(
+        to=Product,
+        on_delete=models.CASCADE,
+        verbose_name='Товар'
+    )
+    quantity = models.PositiveSmallIntegerField(
+        default=0,
+        verbose_name='Количество'
+    )
+    created_timestamp = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='Дата добавления'
+    )
+
+    class Meta:
+        db_table = 'cart'
+        verbose_name = 'корзина'
+        verbose_name_plural = 'корзины'
+
+    objects = CartQueryset().as_manager()
+
+    def products_price(self):
+        return round(self.product.price * self.quantity, 2)
