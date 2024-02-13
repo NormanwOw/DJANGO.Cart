@@ -1,42 +1,61 @@
 {% extends 'base.html' %}
 
 {% block content %}
-{{ form }}
+<div class="cart-main">
+    {% for cart in carts %}
+    <div class="cart-wrapper">
+        <div class="cart-container">
+            <p>{{ cart.product.name }}</p>
+            <div class="cart-input-wrapper">
+                <div class="counter-button counter-down">-</div>
+                <input id="{{ forloop.counter }}"
+                       class="input-quantity"
+                       type="number"
+                       min="1"
+                       value="{{ cart.quantity }}"
+                       data-price="{{ cart.product.price }}">
+                <div class="counter-button counter-up">+</div>
+                 X {{ cart.product.price }} = <span class="total-price-{{ forloop.counter }}">{{ cart.products_price }}</span>
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
 {% endblock %}
 {% block script %}
 <script>
-      {#$(document).ready(function () {#}
-      {#    $('#counter_product_up').on('click', function (event) {#}
-      {#        event.preventDefault();#}
-      {#        let counter = $('#counter')#}
-      {#        let counterNumber = Number(counter.text());#}
-      {#        counterNumber+=1;#}
-      {#        counter.text(String(counterNumber));#}
-      {#    });#}
-      {#    $('#counter_product_down').on('click', function (event) {#}
-      {#        event.preventDefault();#}
-      {#        let counter = $('#counter')#}
-      {#        let counterNumber = Number(counter.text());#}
-      {#        if (counterNumber > 1) {#}
-      {#            counterNumber-=1;#}
-      {#            counter.text(String(counterNumber));#}
-      {#        }#}
-      {#    });#}
-      {# });#}
-      {#$(document).ready(function () {#}
-      {#    $('#accept_order').on('click', function (event) {#}
-      {#        event.preventDefault();#}
-      {#        let counter = Number($('#counter').text());#}
-      {#        $.ajax({#}
-      {#            type: 'POST',#}
-      {#            data: {'count': counter},#}
-      {#            url: '{% url "carts:new-order" %}',#}
-      {#            success: function (response) {},#}
-      {#            error: function (response) {#}
-      {#                console.log(response.responseJSON.errors)#}
-      {#            }#}
-      {#        });#}
-      {#    });#}
-      {# })#}
+$(document).ready(function () {
+    $.each($('.input-quantity'), function () {
+        let id = $(this).attr('id')
+        $(this).change(function () {
+            if ($(this).val() < 1) {
+                $(this).val(1)
+            }
+            let quantity = Number($(this).val())
+            let price = Math.floor(parseFloat($(this).attr('data-price')))
+            $('.total-price-'+id).text(price*quantity+'.00')
+        })
+    })
+    $('.counter-up').click(function () {
+        let elem = $(this).prev()
+        let count = Number(elem.val()) + 1
+        elem.val(count)
+        let id = elem.attr('id')
+        let price = Math.floor(parseFloat(elem.attr('data-price')))
+        $('.total-price-'+id).text(price*count+'.00')
+    })
+    $('.counter-down').click(function () {
+        let elem = $(this).next()
+        let count = Number(elem.val()) - 1
+        if (count < 1) {
+            elem.val(1)
+            return false
+        }
+        elem.val(count)
+        let id = elem.attr('id')
+        let price = Math.floor(parseFloat(elem.attr('data-price')))
+        $('.total-price-'+id).text(price*count+'.00')
+    })
+})
 </script>
 {% endblock %}

@@ -1,11 +1,17 @@
 from django.http import Http404, JsonResponse
-from django.shortcuts import render
+from django.views.generic import ListView
 
 from carts.models import Cart
 
 
-def cart(request):
-    return render(request, 'cart.html', {'title': 'Корзина'})
+class CartView(ListView):
+    template_name = 'cart.html'
+    context_object_name = 'carts'
+    extra_context = {'title': 'Корзина'}
+
+    def get_queryset(self):
+        queryset = Cart.objects.filter(user=self.request.user).select_related('product')
+        return queryset
 
 
 def new_order(request):
@@ -29,7 +35,6 @@ def cart_add(request):
             for item in user_cart_list:
                 if item.product_id == product_id:
                     user_cart = item
-                    print(user_cart)
                     break
 
         if isinstance(user_cart, Cart):
