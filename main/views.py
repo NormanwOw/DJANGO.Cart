@@ -1,23 +1,23 @@
 from django.shortcuts import render
-from django.http.response import JsonResponse
+from django.views.generic import ListView
+from django.contrib.auth.mixins import LoginRequiredMixin
+
+from carts.models import Product
 
 
 def index(request):
     context = {
         'title': 'Главная',
-        'counter': 0
+        'counter': 1
     }
     return render(request, 'index.html', context)
 
 
-counter = 0
+class ProductsView(LoginRequiredMixin, ListView):
+    template_name = 'products.html'
+    queryset = Product.objects.all()
+    context_object_name = 'products'
+    extra_context = {'title': 'Товары'}
 
 
-def product_counter(request):
-    global counter
-    if request.method == 'POST':
-        counter += 1
-    data = {
-        'counter': counter
-    }
-    return JsonResponse(data)
+

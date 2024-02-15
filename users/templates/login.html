@@ -1,0 +1,78 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block css %}
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+{% endblock %}
+
+{% block content %}
+<div class="container">
+    <div class="row">
+        <form class="form-font" method="POST">
+            {% csrf_token %}
+            <div>
+                <div class="input-wrapper">
+                    <div class="input-label-container">
+                        <label for="id_username">{{ form.username.label }}:</label>
+                        <div class="input-container">
+                            <input class="form-input"
+                                   type="text"
+                                   name="username"
+                                   placeholder="{{ form.username.label }}"
+                                   maxlength="32"
+                                   required=""
+                                   id="id_username"
+                                   value="{% if form.username.value %}{{ form.username.value }}{% endif %}">
+                        </div>
+                    </div>
+                    <div class="error error-username"></div>
+                </div>
+            </div>
+            <div>
+                <div class="input-wrapper">
+                    <div class="input-label-container">
+                        <label for="id_password">{{ form.password.label }}: </label>
+                        <div class="input-container">
+                            <input class="form-input"
+                                   type="password"
+                                   name="password"
+                                   placeholder="{{ form.password.label }}"
+                                   required=""
+                                   id="id_password"
+                                   value="{% if form.password.value %}{{ form.password.value }}{% endif %}">
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div>
+            </div>
+            <button class="form-button" type="submit">Войти</button>
+        </form>
+    </div>
+</div>
+{% endblock %}
+{% block script %}
+<script>    
+    $(document).ready(function () {
+          $('form').submit(function (e) {
+              e.preventDefault();
+              $.ajax({
+                  data: $(this).serialize(),
+                  type: $(this).attr('method'),
+                  url: "{% url 'users:login' %}",
+                  success: function () {
+                      window.location.replace('{% url "main:home" %}');
+                  },
+                  error: function (response) {
+                      $.each(response.responseJSON.errors, function (key, value) {
+                          $.each(value, function () {
+                              $('.error-nonfield').text($(this)[0].message).css('display', 'block').delay(5000).fadeOut(1000)
+                          });
+                      })
+                  }
+              });
+              return false;
+          });
+    })
+</script>
+{% endblock %}

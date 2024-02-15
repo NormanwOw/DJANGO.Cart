@@ -48,6 +48,7 @@ TEMPLATES = [
                 'django.template.context_processors.request',
                 'django.contrib.auth.context_processors.auth',
                 'django.contrib.messages.context_processors.messages',
+                'main.context_processors.product_count'
             ],
         },
     },
@@ -103,14 +104,4 @@ INTERNAL_IPS = [
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTH_USER_MODEL = 'users.User'
-# LOGIN_URL = '/users/login/'
-
-EMAIL_HOST = settings.SMTP_HOST
-EMAIL_PORT = settings.SMTP_PORT
-EMAIL_HOST_USER = settings.SMTP_USER
-EMAIL_HOST_PASSWORD = settings.SMTP_PASSWORD
-EMAIL_USE_SSL = True
-
-DEFAULT_FROM_EMAIL = EMAIL_HOST_USER
-SERVER_EMAIL = EMAIL_HOST_USER
-EMAIL_ADMIN = EMAIL_HOST_USER
+LOGIN_URL = '/users/login/'
