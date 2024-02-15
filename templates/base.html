@@ -20,11 +20,10 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarNavAltMarkup">
           <div class="navbar-nav">
-            <a class="nav-link active" aria-current="page" href="{% url 'main:products' %}">Товары</a>
-            <a class="nav-link active" aria-current="page" href="{% url 'carts:cart' %}">Корзина</a>
-            <div class="product-count"{% if not product_count %}style="display: none" {% endif %}>
-                <p>{{ product_count }}</p>
-            </div>
+            <a class="nav-link active {% if title == 'Товары' %}current-page{% endif %}" aria-current="page" href="{% url 'main:products' %}">Товары</a>
+              <a class="nav-link active nav-cart-button {% if title == 'Корзина' %}current-page{% endif %}" aria-current="page" href="{% url 'carts:cart' %}">Корзина
+                  <span class="product-count product-count-span" {% if not product_count %}style="display: none"{% endif %}>{{ product_count }}</span>
+              </a>
             <a class="nav-link disabled" href="#" tabindex="-1" aria-disabled="true">Вход</a>
           </div>
         </div>

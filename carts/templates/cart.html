@@ -2,29 +2,57 @@
 
 {% block content %}
 <div class="cart-main">
+{% if not carts %}
+    <p class="cart-empty-title">Корзина пуста</p>
+{% else %}
     {% for cart in carts %}
     <div class="cart-wrapper">
         <div class="cart-container">
-            <p>{{ cart.product.name }}</p>
+            <p id="cart-{{ forloop.counter }}">{{ cart.product.name }}</p>
             <div class="cart-input-wrapper">
-                <div class="counter-button counter-down">-</div>
-                <input id="{{ forloop.counter }}"
-                       class="input-quantity"
-                       type="number"
-                       min="1"
-                       value="{{ cart.quantity }}"
-                       data-price="{{ cart.product.price }}">
-                <div class="counter-button counter-up">+</div>
-                 X {{ cart.product.price }} = <span class="total-price-{{ forloop.counter }}">{{ cart.products_price }}</span>
+                <div class="cart-counter-wrapper">
+                    <div class="main-button counter-button counter-down"><span class="fa fa-minus" aria-hidden="true"></span></div>
+                    <input id="{{ forloop.counter }}"
+                           class="input-quantity"
+                           type="number"
+                           min="1"
+                           value="{{ cart.quantity }}"
+                           data-price="{{ cart.product.price }}">
+                    <div class="main-button counter-button counter-up"><span class="fa fa-plus" aria-hidden="true"></span></div>
+                </div>
+                {{ cart.product.price }}<span class="total-price-{{ forloop.counter }}">{{ cart.products_price }}</span>
+                <div class="main-button cart-remove" data-product="{{ cart.product.name }}">
+                    {% csrf_token %}
+                    <span class="fa fa-trash-o" aria-hidden="true"></span>
+                </div>
             </div>
         </div>
     </div>
     {% endfor %}
+    <div class="cart-total-price">
+        <p>Итого: {{ total_price }}</p>
+    </div>
+    <div class="main-button accept-order-button">
+        <a href="{% url 'carts:accept-order' %}">Оформить заказ</a>
+    </div>
+{% endif %}
 </div>
 {% endblock %}
 {% block script %}
 <script>
-$(document).ready(function () {
+function updateQuantity(quantity, product) {
+    $.ajax({
+        method: 'GET',
+        url: {% url 'carts:cart-update' %},
+        data: {'quantity': quantity, 'product': product},
+        success: function (response) {
+            $('.cart-total-price p').text('Итого: '+response.total_price)
+        }
+    })
+
+}
+
+function update() {
     $.each($('.input-quantity'), function () {
         let id = $(this).attr('id')
         $(this).change(function () {
@@ -33,29 +61,72 @@ $(document).ready(function () {
             }
             let quantity = Number($(this).val())
             let price = Math.floor(parseFloat($(this).attr('data-price')))
-            $('.total-price-'+id).text(price*quantity+'.00')
+            let totalPrice = price * quantity + '.00'
+            let product = $('#cart-' + id).text()
+            $('.total-price-' + id).text(totalPrice)
+            updateQuantity(quantity, product)
         })
     })
     $('.counter-up').click(function () {
         let elem = $(this).prev()
-        let count = Number(elem.val()) + 1
-        elem.val(count)
+        let quantity = Number(elem.val()) + 1
+        elem.val(quantity)
         let id = elem.attr('id')
         let price = Math.floor(parseFloat(elem.attr('data-price')))
-        $('.total-price-'+id).text(price*count+'.00')
+        let totalPrice = price * quantity + '.00'
+        let product = $('#cart-' + id).text()
+        $('.total-price-' + id).text(totalPrice)
+        updateQuantity(quantity, product)
     })
     $('.counter-down').click(function () {
         let elem = $(this).next()
-        let count = Number(elem.val()) - 1
-        if (count < 1) {
+        let quantity = Number(elem.val()) - 1
+        if (quantity < 1) {
             elem.val(1)
             return false
         }
-        elem.val(count)
+        elem.val(quantity)
         let id = elem.attr('id')
         let price = Math.floor(parseFloat(elem.attr('data-price')))
-        $('.total-price-'+id).text(price*count+'.00')
+        let totalPrice = price * quantity + '.00'
+        let product = $('#cart-' + id).text()
+        $('.total-price-' + id).text(totalPrice)
+        updateQuantity(quantity, product)
     })
+}
+
+function removeProduct() {
+    $('.cart-remove').click(function () {
+        let product = $(this).attr('data-product')
+        let elem = $('.product-count-span')
+        $.ajax({
+            method: 'POST',
+            url: {% url 'carts:cart' %},
+            data: {'product': product, 'csrfmiddlewaretoken': $('[name=csrfmiddlewaretoken]').val()},
+            success: function (response) {
+                console.log()
+                $('.cart-main').empty().append($(response).find('.cart-main').html())
+                update()
+                let count = Number($(response).find('.product-count').text())
+                if (count === 0) {
+                    elem.remove()
+                } else {
+                    elem.text(count)
+                }
+            }
+        })
+
+    })
+}
+
+$(document).ready(function () {
+    removeProduct()
+    update()
 })
+
+$(document).ajaxStop(function () {
+    removeProduct()
+})
+
 </script>
 {% endblock %}

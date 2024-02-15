@@ -17,6 +17,7 @@ class ProductsView(LoginRequiredMixin, ListView):
     template_name = 'products.html'
     queryset = Product.objects.all()
     context_object_name = 'products'
+    extra_context = {'title': 'Товары'}
 
 
 

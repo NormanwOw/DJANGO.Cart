@@ -68,7 +68,8 @@ class OrderItem(models.Model):
     order = models.ForeignKey(
         to=Order,
         on_delete=models.CASCADE,
-        verbose_name='Заказ'
+        verbose_name='Заказ',
+        related_name='item'
     )
     product = models.ForeignKey(
         to=Product,
@@ -99,7 +100,7 @@ class OrderItem(models.Model):
 class CartQueryset(models.QuerySet):
 
     def total_price(self):
-        return sum(cart.products_price() for cart in self)
+        return sum(cart.products_price()*cart.quantity for cart in self)
 
     def total_quantity(self):
         if self:
@@ -132,6 +133,7 @@ class Cart(models.Model):
         db_table = 'cart'
         verbose_name = 'корзина'
         verbose_name_plural = 'корзины'
+        ordering = ('product',)
 
     objects = CartQueryset().as_manager()
 

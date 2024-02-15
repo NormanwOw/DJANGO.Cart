@@ -39,11 +39,10 @@ $(document).ready(function () {
           url: {% url 'carts:cart-add' %},
           data: {
               'product_id': productID,
-              'csrfmiddlewaretoken': $("[name=csrfmiddlewaretoken]").val()
+              'csrfmiddlewaretoken': $('[name=csrfmiddlewaretoken]').val()
           },
           success: function (data) {
-              $('.product-count').css('display', 'flex');
-              $('.product-count>p').text(data.product_count);
+              $('.product-count-span').css('display', 'flex').text(data.product_count);
           }
       });
       return false;

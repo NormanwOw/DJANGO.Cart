@@ -1,14 +1,53 @@
+a {
+    text-decoration: none;
+    color: white;
+    padding: 5px;
+    padding-inline: 10px;
+}
+
+a:hover {
+    color: white;
+}
+
+.nav-link:hover {
+    background-color: rgba(168,161,167,0.20);
+}
+
+.current-page {
+    pointer-events: none;
+    cursor: default;
+    background-color: rgba(168,161,167,0.20);
+}
+
 .main-wrapper {
     display: flex;
     justify-content: center;
 }
 
 .main-container {
-    width: 70%;
+    margin-inline: 30px;
+}
+
+.main-button {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #323644;
+    color: white;
+}
+
+.main-button:hover {
+    background-color: rgba(50,54,68,0.82);
+    cursor: pointer;
 }
 
 .card {
     margin-top: 2em;
+}
+
+.col {
+    display: flex;
+    justify-content: center;
 }
 
 .input-quantity {
@@ -17,22 +56,46 @@
 
 .cart-input-wrapper {
     display: flex;
+    justify-content: space-between;
+}
+
+.cart-wrapper {
+    width: 100%;
+}
+
+.cart-counter-wrapper {
+    display: flex;
+}
+
+.cart-main {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 500px;
+}
+
+.nav-cart-button {
+    display: flex;
 }
 
 .counter-button {
-    display: flex;
-    justify-content: center;
-    background-color: #323644;
-    color: white;
     width: 30px;
     font-weight: bold;
-    font-size: 1.2em;
-    padding-bottom: 5px;
 }
 
 .counter-button:hover {
     background-color: rgba(50,54,68,0.82);
     cursor: pointer;
+}
+
+.cart-remove {
+    width: 50px;
+    height: 34px;
+}
+
+.cart-empty-title {
+    margin-top: 2em;
+    font-size: 2em;
 }
 
 input[type="number"] {
@@ -68,4 +131,23 @@ input[type="number"]::-webkit-inner-spin-button {
 
 .product-count p {
     margin: 0;
+}
+
+@media (max-width: 992px) {
+    .product-count {
+        display: none;
+    }
+
+    .product-count-span {
+        display: flex;
+        position: static;
+        margin-left: 5px;
+        margin-top: 5px
+    }
+}
+
+@media (max-width: 600px) {
+    .cart-main {
+        width: 300px;
+    }
 }
