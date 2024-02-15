@@ -100,7 +100,7 @@ class OrderItem(models.Model):
 class CartQueryset(models.QuerySet):
 
     def total_price(self):
-        return sum(cart.products_price()*cart.quantity for cart in self)
+        return sum(cart.products_price() for cart in self)
 
     def total_quantity(self):
         if self:

@@ -20,7 +20,18 @@
                            data-price="{{ cart.product.price }}">
                     <div class="main-button counter-button counter-up"><span class="fa fa-plus" aria-hidden="true"></span></div>
                 </div>
-                {{ cart.product.price }}<span class="total-price-{{ forloop.counter }}">{{ cart.products_price }}</span>
+                <div class="cart-content">
+                    <span class="fa fa-times" aria-hidden="true"></span>
+                </div>
+                <div class="cart-price cart-content">
+                    {{ cart.product.price }}
+                </div>
+                <div class="cart-content">
+                    =
+                </div>
+                <div class="total-price-{{ forloop.counter }} cart-content">
+                    {{ cart.products_price }}
+                </div>
                 <div class="main-button cart-remove" data-product="{{ cart.product.name }}">
                     {% csrf_token %}
                     <span class="fa fa-trash-o" aria-hidden="true"></span>
@@ -29,6 +40,7 @@
         </div>
     </div>
     {% endfor %}
+    <div class="line-total-price"></div>
     <div class="cart-total-price">
         <p>Итого: {{ total_price }}</p>
     </div>
